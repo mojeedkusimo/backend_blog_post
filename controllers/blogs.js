@@ -1,5 +1,6 @@
 const blogRoute = require('express').Router();
 const BlogModel = require('../models/blogs');
+const UserModel = require('../models/users');
 
 
 blogRoute.delete('/:id', async (req, res, next) => {
@@ -40,6 +41,7 @@ blogRoute.post('/', async (req, res, next) => {
     try {
         const newBlog = new BlogModel(req.body);
         const savedBlog = await newBlog.save();
+        await UserModel.findByIdAndUpdate(req.body.author, { $push: { blogPosts: savedBlog._id } });
         return res.status(201).json(savedBlog);
 
     } catch(e) {
