@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     email: {
         type: String,
+        unique: true,
         required: true
     },
     password: {
@@ -24,5 +25,13 @@ const userSchema = mongoose.Schema({
 },
 { timestamps: true }
 );
+
+userSchema.set('toJSON', {
+    transform: (doc, returnedObj) => {
+        returnedObj.id = returnedObj._id.toString();
+        delete returnedObj._id;
+        delete returnedObj.__v;
+    }
+});
 
 module.exports = mongoose.model('user', userSchema);

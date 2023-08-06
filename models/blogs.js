@@ -18,4 +18,13 @@ const blogSchema = mongoose.Schema({
 { timestamps: true }
 );
 
+blogSchema.set('toJSON', {
+    transform: (doc, returnedObj) => {
+        returnedObj.id = returnedObj._id.toString();
+        delete returnedObj._id;
+        delete returnedObj.__v;
+    }
+});
+
+
 module.exports = mongoose.model('blog', blogSchema);
