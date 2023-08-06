@@ -3,16 +3,16 @@ const generalRoutes = require('express').Router();
 
 generalRoutes.get('/', (req, res) => {
     res.send({
-        'DELETE/api/user/:id': 'deleteUser',
-        'DELETE/api/post/:id': 'deleteBlogPost',
+        'DELETE/api/users/:id': 'deleteUser',
+        'DELETE/api/posts/:id': 'deleteBlogPost',
         'GET/api/users': 'getAllUsers',
-        'GET/api/user/:id': 'getSingleUser',
+        'GET/api/users/:id': 'getSingleUser',
         'GET/api/posts': 'getAllBlogPosts',
-        'GET/api/post/:id': 'getSingleBlogPost',
-        'POST/api/user': 'createUser',
-        'POST/api/post': 'createBlogPost',
-        'PUT/api/user/:id': 'updateUser',
-        'PUT/api/post/:id': 'updateBogPost'
+        'GET/api/posts/:id': 'getSingleBlogPost',
+        'POST/api/users': 'createUser',
+        'POST/api/posts': 'createBlogPost',
+        'PUT/api/users/:id': 'updateUser',
+        'PUT/api/posts/:id': 'updateBogPost'
     });
 });
 

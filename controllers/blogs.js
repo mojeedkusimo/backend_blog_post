@@ -2,7 +2,7 @@ const blogRoute = require('express').Router();
 const BlogModel = require('../models/blogs');
 
 
-blogRoute.delete('/post/:id', async (req, res, next) => {
+blogRoute.delete('/:id', async (req, res, next) => {
 
     try {
         await BlogModel.findByIdAndDelete(req.params.id);
@@ -13,7 +13,7 @@ blogRoute.delete('/post/:id', async (req, res, next) => {
     }
 });
 
-blogRoute.get('/posts', async (req, res, next) => {
+blogRoute.get('/', async (req, res, next) => {
 
     try {
         const allBlogs = await BlogModel.find({}).sort({ createdAt: -1 });
@@ -24,7 +24,7 @@ blogRoute.get('/posts', async (req, res, next) => {
     }
 });
 
-blogRoute.get('/post/:id', async (req, res, next) => {
+blogRoute.get('/:id', async (req, res, next) => {
 
     try {
         const singlBlogPost = await BlogModel.findById(req.params.id);
@@ -35,19 +35,19 @@ blogRoute.get('/post/:id', async (req, res, next) => {
     }
 });
 
-blogRoute.post('/post', async (req, res, next) => {
+blogRoute.post('/', async (req, res, next) => {
 
     try {
         const newBlog = new BlogModel(req.body);
         const savedBlog = await newBlog.save();
-        return res.status(200).json(savedBlog);
+        return res.status(201).json(savedBlog);
 
     } catch(e) {
         next(e);
     }
 });
 
-blogRoute.put('/post/:id', async (req, res, next) => {
+blogRoute.put('/:id', async (req, res, next) => {
 
     try {
         const singlBlogPost = await BlogModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });

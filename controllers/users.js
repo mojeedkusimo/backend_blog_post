@@ -1,8 +1,8 @@
 const userRoute = require('express').Router();
 const UserModel = require('../models/users');
-const logger = require('../utils/logger');
+const bcrypt = require('bcrypt');
 
-userRoute.delete('/user/:id', async (req, res, next) => {
+userRoute.delete('/:id', async (req, res, next) => {
 
     try {
         await UserModel.findByIdAndDelete(req.params.id);
@@ -14,7 +14,7 @@ userRoute.delete('/user/:id', async (req, res, next) => {
 });
 
 
-userRoute.get('/users', async (req, res, next) => {
+userRoute.get('/', async (req, res, next) => {
 
     try {
         const usersData = await UserModel.find({}).sort({ createdAt: -1 });
@@ -25,7 +25,7 @@ userRoute.get('/users', async (req, res, next) => {
     }
 });
 
-userRoute.get('/user/:id', async (req, res, next) => {
+userRoute.get('/:id', async (req, res, next) => {
 
     try {
         const singleUser = await UserModel.findById(req.params.id);
@@ -36,19 +36,22 @@ userRoute.get('/user/:id', async (req, res, next) => {
     }
 });
 
-userRoute.post('/user', async (req, res, next) => {
+userRoute.post('/', async (req, res, next) => {
 
     try {
-        const newUser = new UserModel(req.body);
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
+
+        const newUser = new UserModel({ ...req.body, password: hashedPassword });
         const savedData = await newUser.save();
-        return res.status(200).json(savedData);
+        return res.status(201).json(savedData);
 
     } catch(e) {
         next(e);
     }
 });
 
-userRoute.put('/user/:id', async (req, res, next) => {
+userRoute.put('/:id', async (req, res, next) => {
 
     try {
         const usersData = await UserModel.findByIdAndUpdate(req.params.id,req.body, { new: true, runValidators: true });

@@ -21,7 +21,13 @@ const userSchema = mongoose.Schema({
     },
     picture: {
         type: String
-    }
+    },
+    blogPosts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Blog'
+        }
+    ]
 },
 { timestamps: true }
 );
@@ -31,6 +37,7 @@ userSchema.set('toJSON', {
         returnedObj.id = returnedObj._id.toString();
         delete returnedObj._id;
         delete returnedObj.__v;
+        delete returnedObj.password;
     }
 });
 
