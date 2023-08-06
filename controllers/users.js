@@ -1,10 +1,12 @@
 const userRoute = require('express').Router();
+const UserModel = require('../models/users');
 
 
-userRoute.get('/users/all', async (req, res, next) => {
+userRoute.get('/users', async (req, res, next) => {
 
     try {
-        return res.status(200).json({});
+        const usersData = await UserModel.find({});
+        return res.status(200).json(usersData);
 
     } catch(e) {
         next(e);
