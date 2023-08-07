@@ -17,9 +17,10 @@ mongoose.connect(config.MONGODB_URI)
 
 app.use(cors());
 app.use(express.json());
+app.use(generalRoutes);
+app.use(middleware.isLoggedIn);
 app.use('/api/users', userRoutes);
 app.use('/api/posts', blogRoutes);
-app.use(generalRoutes);
 
 app.use(middleware.unknownRoute);
 app.use(middleware.errorHandler);
