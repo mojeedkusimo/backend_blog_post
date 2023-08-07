@@ -26,17 +26,16 @@ const unknownRoute = (req, res) => {
 const errorHandler = (error, req, res, next) => {
     logger.error(error.message);
 
-    if (error.name === 'ValidationError') {
-        return  res.status(400).send({ error: error.message });
-    } else if (error.name ===  'JsonWebTokenError') {
-        return res.status(401).json({ error: error.message });
-    }else if (error.name === 'TokenExpiredError') {
-        return res.status(401).json({
-            error: 'token expired'
-        });
+    switch (error.name) {
+    case 'ValidationError':
+        return res.status(400).send({ error: error.message });
+    case 'JsonWebTokenError':
+        return res.status(401).send({ error: error.message });
+    case 'TokenExpiredError':
+        return res.status(401).send({ error: 'token expired' });
+    default:
+        return res.status(500).send({ error: error.message });
     }
-
-    return res.status(500).send({ error: error.message });
 
 };
 
