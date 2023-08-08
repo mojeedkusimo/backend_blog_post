@@ -1,22 +1,60 @@
 const logger = require('../utils/logger');
 const jwt = require('jsonwebtoken');
 const config = require('./config');
+const UserModel = require('../models/users');
 
-const isLoggedIn = (req, res, next) => {
+const isLoggedIn = async (req, res, next) => {
 
-    const { authorization } = req.headers;
-    if (authorization && authorization.startsWith('Bearer ')) {
-        const rawToken = authorization.replace('Bearer ', '');
-        const decodedToken = jwt.verify(rawToken, config.SECRETE);
+    try {
 
-        if (!decodedToken.id) {
-            return res.status(401).send({ error: 'Invalid token!' });
+        const { authorization } = req.headers;
+        if (authorization && authorization.startsWith('Bearer ')) {
+            const rawToken = authorization.replace('Bearer ', '');
+            const decodedToken = jwt.verify(rawToken, config.SECRETE);
+
+            if (!decodedToken.id) {
+                return res.status(401).send({ error: 'Invalid token!' });
+            }
+
+            const user = await UserModel.findById(decodedToken.id);
+            req.user = user;
+            return next();
         }
-        req.token = decodedToken;
-        return next();
-    }
 
-    return res.status(401).send({ error: 'You are not logged in!' });
+        return res.status(401).send({ error: 'You are not logged in!' });
+    } catch (e) {
+        next(e);
+    }
+};
+
+const isAdmin = async (req, res, next) => {
+
+    try {
+
+        if (!req.user.isAdmin) {
+
+            return res.status(401).send({ error: 'You are not an admin!' });
+        }
+
+        next();
+
+    } catch (e) {
+        next(e);
+    }
+};
+
+const isAuthorized = async (req, res, next) => {
+
+    try {
+        if (!req.user.isAdmin || !req.params.id) {
+
+            return res.status(401).send({ error: 'You are not authorized!' });
+        }
+
+        next();
+    } catch (e) {
+        next(e);
+    }
 };
 
 const unknownRoute = (req, res) => {
@@ -43,5 +81,7 @@ const errorHandler = (error, req, res, next) => {
 module.exports = {
     unknownRoute,
     errorHandler,
-    isLoggedIn
+    isLoggedIn,
+    isAdmin,
+    isAuthorized
 };

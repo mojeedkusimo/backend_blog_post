@@ -27,7 +27,12 @@ const userSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Blog'
         }
-    ]
+    ],
+    isAdmin: {
+        type: Boolean,
+        required: true,
+        default: false
+    }
 },
 { timestamps: true }
 );
