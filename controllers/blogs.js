@@ -26,6 +26,17 @@ blogRoute.get('/', async (req, res, next) => {
     }
 });
 
+blogRoute.get('/recent', async (req, res, next) => {
+
+    try {
+        const recentBlogs = await BlogModel.find({}).sort({ createdAt: -1 }).limit(10);
+        return res.status(200).json(recentBlogs);
+
+    } catch(e) {
+        next(e);
+    }
+});
+
 blogRoute.get('/:id', async (req, res, next) => {
 
     try {
