@@ -46,7 +46,7 @@ const isAdmin = async (req, res, next) => {
 const isAuthorized = async (req, res, next) => {
 
     try {
-        if (!req.user.isAdmin || !req.params.id) {
+        if (!req.user || !req.user.isAdmin || !req.params.id) {
 
             return res.status(401).send({ error: 'You are not authorized!' });
         }
